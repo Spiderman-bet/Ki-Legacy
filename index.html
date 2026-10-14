@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Ki Legacy: Last World Union</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d31;--panel2:#1d2942;--line:#33415f;--text:#f3f6ff;--muted:#aab6d1;--gold:#ffd166;--red:#ff6b6b;--green:#65d6a3;--blue:#75baff;--purple:#c4a1ff}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#1b2b4a 0,#0b1020 48%);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+button,select,input{font:inherit}
+button{border:1px solid #4a5c7d;background:#273653;color:var(--text);border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:650;transition:filter .15s,transform .15s}
+button:hover{filter:brightness(1.15)}button:active{transform:scale(.98)}button:disabled{opacity:.38;cursor:not-allowed}
+button.primary{background:#f2b84b;color:#241a08;border-color:#ffe09b}
+button.good{background:#17684f;border-color:#2a9e7b}
+button.danger{background:#7c2938;border-color:#bb4b60}
+button.ghost{background:transparent}
+.wrap{max-width:1100px;margin:auto;padding:18px 14px 38px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{font-size:clamp(1.55rem,4vw,2.35rem);line-height:1.08;margin:0 0 7px;letter-spacing:-.04em}
+.subtitle{color:var(--muted);font-size:.93rem}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#111a2d;border-radius:999px;padding:5px 10px;color:var(--muted);font-size:.8rem;white-space:nowrap}
+.grid{display:grid;grid-template-columns: minmax(0,1.05fr) minmax(0,1.35fr);gap:14px}
+.panel{background:linear-gradient(145deg,rgba(25,36,59,.97),rgba(16,24,42,.97));border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 12px 28px #0002;min-width:0}
+.panel h2{font-size:1.08rem;margin:0 0 11px}
+.panel h3{font-size:.93rem;margin:0 0 7px}
+.topstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.statbox{background:#10192b;border:1px solid #293853;border-radius:12px;padding:9px}
+.statbox span{display:block;color:var(--muted);font-size:.74rem}.statbox strong{font-size:1.05rem}
+.bar{height:8px;background:#0b1221;border-radius:99px;overflow:hidden;margin-top:5px;border:1px solid #29344a}
+.bar i{display:block;height:100%;background:var(--green);width:50%;border-radius:99px}
+.bar.hp i{background:var(--red)}.bar.ki i{background:var(--blue)}.bar.life i{background:var(--purple)}
+.small{font-size:.82rem;color:var(--muted)}
+.muted{color:var(--muted)}
+hr{border:0;border-top:1px solid var(--line);margin:13px 0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.actions button{flex:1 1 auto}
+.tabs{display:flex;gap:6px;overflow:auto;padding-bottom:8px;margin-bottom:10px}
+.tabs button{white-space:nowrap;padding:8px 11px;font-size:.88rem}
+.tabs button.active{background:#e6b64e;color:#251b0a;border-color:#ffdc85}
+.log{height:220px;overflow:auto;background:#0c1425;border:1px solid #2c3b56;border-radius:12px;padding:11px;font-size:.88rem}
+.log p{margin:0 0 9px}.log p:last-child{margin-bottom:0}
+.tag{display:inline-block;border-radius:6px;background:#26334d;padding:2px 6px;font-size:.72rem;color:#cbd7ef;margin:2px 3px 2px 0}
+.tag.gold{color:#ffe19a;background:#4b3b20}.tag.red{color:#ffb3bb;background:#4a202d}.tag.green{color:#9cf0c8;background:#173b34}
+.fighter{border:1px solid var(--line);background:#10192b;border-radius:13px;padding:11px;margin:8px 0}
+.fighter.selected{border-color:var(--gold);box-shadow:0 0 0 1px #ffd16633}
+.fighter p{margin:5px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label{display:block;font-size:.8rem;color:var(--muted);margin:8px 0 4px}
+select,input{width:100%;background:#0c1425;color:var(--text);border:1px solid #3b4c6b;border-radius:10px;padding:10px}
+.notice{border-left:3px solid var(--gold);padding:8px 10px;background:#332b1d55;border-radius:0 9px 9px 0;color:#f4dfad;font-size:.85rem}
+.hidden{display:none!important}
+.footer{color:#7887a5;font-size:.75rem;text-align:center;margin-top:18px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:13px 10px 28px}header{align-items:flex-start}.topstats{grid-template-columns:repeat(3,1fr)}.log{height:185px}.panel{padding:13px}}
+@media(max-width:380px){.topstats{grid-template-columns:repeat(2,1fr)}.pill{font-size:.7rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div><h1>⚡ KI LEGACY</h1><div class="subtitle">Last World Union · A generational fighter RPG</div></div>
+ <span class="pill" id="saveStatus">● Autosave on</span>
+</header>
+<div class="grid">
+<section class="panel">
+ <div class="row"><h2>Your Fighter</h2><span class="pill" id="genPill">Generation 1</span></div>
+ <div id="fighterCard"></div>
+ <div class="topstats" id="quickStats"></div>
+ <div class="row"><h3>Training</h3><span class="small" id="xpText"></span></div>
+ <div class="bar"><i id="xpBar"></i></div>
+ <div class="actions">
+  <button onclick="train('body')">Body Training</button>
+  <button onclick="train('ki')">Ki Control</button>
+  <button onclick="train('skill')">Combat Drills</button>
+  <button onclick="train('rest')">Rest and Recover</button>
+ </div>
+ <hr>
+ <h3>Inner-Self Trial</h3>
+ <p class="small">A spiritual confrontation expands your Life Force capacity. It drains your reserve for a while. You can attempt it once per 10 levels gained, and your Life Force recovers as you progress toward the next trial.</p>
+ <div id="lifeTrial"></div>
+ <div class="actions"><button class="primary" id="trialBtn" onclick="innerTrial()">Face Your Inner Self</button></div>
+ <hr>
+ <h3>Union Dispatch</h3>
+ <p class="small">The World Union coordinates resistance against the monsters that have seized the surface.</p>
+ <div class="actions"><button class="primary" onclick="startBattle('monster')">Hunt Monsters</button><button onclick="startBattle('rogue')">Challenge Rogue Fighter</button><button onclick="startBattle('spar')">Friendly Spar</button><button class="danger" onclick="startBattle('clan')">Clan Conflict</button></div>
+</section>
+<section class="panel">
+ <div class="tabs">
+  <button class="active" data-tab="battle" onclick="showTab('battle',this)">Battle</button>
+  <button data-tab="roster" onclick="showTab('roster',this)">Roster</button>
+  <button data-tab="lineage" onclick="showTab('lineage',this)">Lineage</button>
+  <button data-tab="world" onclick="showTab('world',this)">World Intel</button>
+ </div>
+ <div id="tab-battle">
+  <div class="row"><h2 id="battleTitle">Ready for deployment</h2><span class="pill" id="battlePower">Power 0</span></div>
+  <div id="battleInfo" class="notice">Choose a dispatch to begin. Combat is turn-based. Dialogue describes each exchange and your stats determine the outcome.</div>
+  <div class="two" id="combatants"></div>
+  <div class="actions" id="battleActions"></div>
+  <div class="log" id="battleLog" aria-live="polite"><p class="muted">Union briefing: the monsters are expanding their territory. Each generation must push farther than the last.</p></div>
+ </div>
+ <div id="tab-roster" class="hidden">
+  <h2>Fighter Roster</h2><p class="small">Rogue fighters who survive a challenge can join the Union. Use them as mentors or choose one to lead your next generation.</p>
+  <div id="rosterList"></div>
+ </div>
+ <div id="tab-lineage" class="hidden">
+  <h2>Bloodline Archive</h2><p class="small">Your successors inherit a small stat edge and improved growth. Bonuses compound with every generation. Life Force is inherited as potential, but must be awakened through inner-self trials.</p>
+  <div id="lineageList"></div>
+  <div class="actions"><button class="good" onclick="makeDescendant()">Raise a Descendant</button></div>
+  <p class="small">A descendant continues the campaign. Your current fighter retires from active duty, but remains in the archive. You can only have one active leader.</p>
+ </div>
+ <div id="tab-world" class="hidden">
+  <h2>World Intel</h2>
+  <div class="fighter"><span class="tag red">Monster Front</span><p id="worldFront"></p></div>
+  <div class="fighter"><span class="tag gold">Union Objective</span><p id="worldObjective"></p></div>
+  <div class="fighter"><span class="tag green">Legacy Effect</span><p id="worldLegacy"></p></div>
+  <div class="notice">Power Level is the sum of HP, Attack, Defense, Ki, Skill/Mastery, and current Life Force. It is a rough field estimate, not a guarantee of victory.</div>
+  <div class="actions"><button class="ghost" onclick="exportSave()">Export Save</button><button class="ghost" onclick="document.getElementById('importFile').click()">Import Save</button><input id="importFile" type="file" accept=".json,application/json" class="hidden" onchange="importSave(event)"><button class="danger" onclick="resetGame()">Reset Campaign</button></div>
+ </div>
+</section>
+</div>
+<div class="footer">A fan-made, original-text browser prototype. Progress autosaves on this device. Export a save before clearing browser data.</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const species={
+ Human:{base:{hp:30,atk:6,def:6,ki:5,skill:7,life:20},perk:"Adaptive Training",desc:"Balanced growth. Every level grants +0.30 Skill and +0.20 to a random core stat."},
+ Saiyan:{base:{hp:28,atk:8,def:5,ki:6,skill:5,life:18},perk:"Battle Surge",desc:"After winning a dangerous battle, gain a small permanent Attack bonus."},
+ Namekian:{base:{hp:38,atk:5,def:8,ki:6,skill:5,life:24},perk:"Regenerative Core",desc:"Rest restores more HP. Gains +0.35 Defense per level."},
+ Frostborn:{base:{hp:27,atk:7,def:6,ki:8,skill:6,life:19},perk:"Cold Precision",desc:"Ki techniques are efficient. Gains +0.35 Ki per level."},
+ Android:{base:{hp:34,atk:7,def:8,ki:4,skill:5,life:22},perk:"Infinite Engine",desc:"Strong defenses. Gains +0.25 HP and +0.20 Defense per level."}
+};
+const styles={
+ Balanced:{atk:1,def:1,ki:1,skill:1,desc:"You read the rhythm of the fight and answer with measured strikes."},
+ Brawler:{atk:1.18,def:.92,ki:.88,skill:.94,desc:"You crowd the opponent and turn every opening into a heavy body blow."},
+ KiCaster:{atk:.88,def:.92,ki:1.22,skill:1.08,desc:"You control the range with focused blasts and precise ki pressure."},
+ Guardian:{atk:.9,def:1.2,ki:1.02,skill:1.02,desc:"You hold your ground, absorb pressure, and counter when the opponent overcommits."},
+ Trickster:{atk:.94,def:.88,ki:1.02,skill:1.25,desc:"Feints and quick footwork make your opponent waste energy."}
+};
+const enemyNames={
+ monster:["Rift Brute","Ash Maw","Hollow Colossus","Dread Stalker","World-Eater Spawn"],
+ rogue:["Rogue Saiyan","Exiled Namekian","Union Breaker","Wandering Ki Adept"],
+ spar:["Union Cadet","Veteran Instructor","Family Rival","Old Training Partner"],
+ clan:["Iron Comet Heir","Crimson Lotus Enforcer","Storm Banner Champion","Rival Clan Prodigy"]
+};
+let state;
+function round(n){return Math.round(n*100)/100}
+function fmt(n){return Number(n).toFixed(2)}
+function makeFighter(name,sp,style,gen=1,inherit=0){
+ const s=species[sp].base, growth=1+inherit*.05;
+ return {id:Date.now()+Math.random(),name,species:sp,style,gen,level:1,xp:0,xpNeed:35,hpMax:round(s.hp*growth),hp:round(s.hp*growth),atk:round(s.atk*growth*styles[style].atk),def:round(s.def*growth*styles[style].def),kiMax:round(s.ki*growth*styles[style].ki),ki:round(s.ki*growth*styles[style].ki),skill:round(s.skill*growth*styles[style].skill),lifeMax:round(s.life*(1+inherit*.03)),life:round(s.life*(1+inherit*.03)),lifeDrain:0,trialReady:true,levelsSinceTrial:0,perk:species[sp].perk,inherit};
+}
+function freshState(){
+ let f=makeFighter("Kairo", "Saiyan","Brawler");
+ return {version:1,active:f,roster:[f],lineage:[],gen:1,legacyBonus:0,monsterWins:0,rogueWins:0,unionRep:0,front:1,battle:null,log:["Union briefing: monsters control most of the surface. Your job is to earn every step forward."],unlocked:["Kairo"]};
+}
+function save(){try{localStorage.setItem("kiLegacySave",JSON.stringify(state));$("saveStatus").textContent="● Autosaved"}catch(e){$("saveStatus").textContent="Save unavailable"}}
+function load(){try{const d=JSON.parse(localStorage.getItem("kiLegacySave"));if(d&&d.active&&d.roster)state=d;else state=freshState()}catch(e){state=freshState()}}
+function power(f){return round(f.hpMax+f.atk+f.def+f.kiMax+f.skill+f.life)}
+function levelBonus(f){
+ let growth=1+f.inherit*.05;
+ f.level++;f.levelsSinceTrial++;f.xp-=f.xpNeed;f.xpNeed=Math.round(f.xpNeed*1.19+5);
+ f.hpMax=round(f.hpMax+3.4*growth);f.atk=round(f.atk+0.78*growth);f.def=round(f.def+0.62*growth);f.kiMax=round(f.kiMax+0.72*growth);f.skill=round(f.skill+0.58*growth);
+ if(f.species==="Human"){f.skill=round(f.skill+.30);const k=["hpMax","atk","def","kiMax"][Math.floor(Math.random()*4)];f[k]=round(f[k]+.2)}
+ if(f.species==="Namekian")f.def=round(f.def+.35);
+ if(f.species==="Frostborn")f.kiMax=round(f.kiMax+.35);
+ if(f.species==="Android"){f.hpMax=round(f.hpMax+.25);f.def=round(f.def+.2)}
+ f.hp=f.hpMax;f.ki=f.kiMax;
+ if(f.species==="Saiyan" && f.level%3===0) f.atk=round(f.atk+.45);
+ // Life Force naturally recharges during level progression after a trial.
+ if(f.lifeDrain>0){f.lifeDrain=Math.max(0,f.lifeDrain-1);f.life=round(Math.min(f.lifeMax,f.life+f.lifeMax*.13));}
+ else f.life=round(Math.min(f.lifeMax,f.life+f.lifeMax*.08));
+ if(f.levelsSinceTrial>=10)f.trialReady=true;
+}
+function log(msg){state.log.push(msg);if(state.log.length>80)state.log.shift();renderLog()}
+function renderLog(){$("battleLog").innerHTML=state.log.slice(-25).map(x=>"<p>"+escapeHtml(x)+"</p>").join("");$("battleLog").scrollTop=$("battleLog").scrollHeight}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){
+ const f=state.active;$("genPill").textContent="Generation "+f.gen;
+ $("fighterCard").innerHTML=`<div class="row"><div><h2 style="margin:0">${escapeHtml(f.name)}</h2><div class="small">${f.species} · ${f.style} Style</div></div><span class="pill">Lv. ${f.level}</span></div><p><span class="tag gold">${f.perk}</span><span class="tag">Power ${fmt(power(f))}</span></p><p class="small">${species[f.species].desc}</p>`;
+ $("quickStats").innerHTML=[
+  ["HP",fmt(f.hp)+"/"+fmt(f.hpMax),"hp",f.hp/f.hpMax],["Attack",fmt(f.atk),"",0],["Defense",fmt(f.def),"",0],["Ki",fmt(f.ki)+"/"+fmt(f.kiMax),"ki",f.ki/f.kiMax],["Skill / Mastery",fmt(f.skill),"",0],["Life Force",fmt(f.life)+"/"+fmt(f.lifeMax),"life",f.life/f.lifeMax]
+ ].map(a=>`<div class="statbox"><span>${a[0]}</span><strong>${a[1]}</strong>${a[2]?`<div class="bar ${a[2]}"><i style="width:${Math.max(0,Math.min(100,a[3]*100))}%"></i></div>`:""}</div>`).join("");
+ $("xpText").textContent=`${fmt(f.xp)} / ${f.xpNeed} XP`; $("xpBar").style.width=Math.min(100,f.xp/f.xpNeed*100)+"%";
+ $("lifeTrial").innerHTML=`<div class="small">Trial readiness: ${f.trialReady?"Ready":"Recovering"} · Levels since last trial: ${f.levelsSinceTrial}/10 · Life Force drained: ${f.lifeDrain} recovery steps</div>`;
+ $("trialBtn").disabled=!f.trialReady||!!state.battle;
+ $("rosterList").innerHTML=state.roster.map(r=>`<div class="fighter ${r.id===f.id?"selected":""}"><div class="row"><strong>${escapeHtml(r.name)}</strong><span class="pill">Lv ${r.level} · Gen ${r.gen}</span></div><p class="small">${r.species} · ${r.style} · Power ${fmt(power(r))}</p><p class="small">${r.id===f.id?"Active leader":(r.retired?"Retired ancestor":"Union roster")}</p>${r.id!==f.id&&!r.retired?`<button onclick="setLeader(${JSON.stringify(r.id)})">Make Leader</button>`:""}</div>`).join("");
+ $("lineageList").innerHTML=state.lineage.length?state.lineage.slice().reverse().map(r=>`<div class="fighter"><div class="row"><strong>${escapeHtml(r.name)}</strong><span class="pill">Generation ${r.gen}</span></div><p class="small">${r.species} · ${r.style} · Final level ${r.level} · Power ${fmt(r.finalPower||power(r))}</p><p class="small">Inherited legacy: +${(r.inherit*5).toFixed(0)}% core growth</p></div>`).join(""):"<p class='muted'>Your family history starts with the current leader. Raise a descendant to begin the archive.</p>";
+ $("worldFront").textContent=`The monster front has advanced to threat tier ${state.front}. Your Union has confirmed ${state.monsterWins} monster victories. Stronger threats appear as your campaign advances.`;
+ $("worldObjective").textContent=`Earn Union reputation (${state.unionRep}). Hunt monsters to push the front back, challenge rogues to recruit them, and spar to build experience with reduced risk.`;
+ $("worldLegacy").textContent=`Generation ${state.gen}. Descendant growth multiplier: x${(1+state.legacyBonus*.05).toFixed(2)}. Each new generation gains another 5% growth and 3% Life Force capacity potential.`;
+ if(!state.battle){$("battleTitle").textContent="Ready for deployment";$("battlePower").textContent="Power "+fmt(power(f));$("battleInfo").textContent="Choose a dispatch to begin. Combat is turn-based. Dialogue describes each exchange and your stats determine the outcome.";$("combatants").innerHTML="";$("battleActions").innerHTML=""}
+ else renderBattle();
+ renderLog();save();
+}
+function showTab(tab,btn){document.querySelectorAll("[id^=tab-]").forEach(e=>e.classList.add("hidden"));$("tab-"+tab).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
+function train(type){
+ if(state.battle)return;const f=state.active;
+ if(type==="body"){f.hpMax=round(f.hpMax+1.1);f.atk=round(f.atk+.22);f.def=round(f.def+.18);f.hp=Math.min(f.hpMax,round(f.hp+3));log(`${f.name} completes body conditioning. Their stance is steadier, and their physical limits edge upward.`)}
+ if(type==="ki"){f.kiMax=round(f.kiMax+.35);f.ki=f.kiMax;f.life=round(Math.max(0,f.life-.25));log(`${f.name} practices ki control. Their aura becomes quieter and more precise, though the effort lightly taxes their Life Force.`)}
+ if(type==="skill"){f.skill=round(f.skill+.3);f.atk=round(f.atk+.08);log(`${f.name} drills footwork and timing. The session improves mastery rather than raw power.`)}
+ if(type==="rest"){f.hp=Math.min(f.hpMax,round(f.hp+f.hpMax*.22));f.ki=Math.min(f.kiMax,round(f.ki+f.kiMax*.3));if(f.species==="Namekian")f.hp=Math.min(f.hpMax,round(f.hp+f.hpMax*.1));log(`${f.name} rests under the Union medics. Breathing slows and some strength returns.`)}
+ render();
+}
+function innerTrial(){
+ const f=state.active;if(!f.trialReady||state.battle)return;
+ f.trialReady=false;f.levelsSinceTrial=0;f.lifeDrain=3;f.life=round(f.life*.35);f.lifeMax=round(f.lifeMax+Math.max(1.5,f.level*.32));
+ f.skill=round(f.skill+.8);f.kiMax=round(f.kiMax+.4);f.ki=Math.min(f.kiMax,round(f.ki+.4));
+ log(`${f.name} enters the inner-self trial. A familiar voice challenges every excuse and every fear. They return changed, with greater Life Force capacity, but their reserve is drained. Three level-ups are needed for full recovery.`);
+ render();
+}
+function enemyFor(type){
+ const f=state.active;const names=enemyNames[type];const name=names[Math.floor(Math.random()*names.length)];
+ const tier=type==="monster"?state.front:type==="clan"?Math.max(1,state.gen+1):Math.max(1,Math.floor(f.level/3)+1);
+ let base=type==="spar"?.74:type==="rogue"?.92:type==="clan"?1.02:1.02;
+ base*=1+(tier-1)*.11;
+ let sp=["Human","Saiyan","Namekian","Frostborn","Android"][Math.floor(Math.random()*5)];
+ let style=Object.keys(styles)[Math.floor(Math.random()*5)];
+ const e=makeFighter(name,sp,style,1,0);
+ e.level=Math.max(1,tier);for(let i=1;i<e.level;i++){e.xp=0;levelBonus(e)}
+ ["hpMax","hp","atk","def","kiMax","ki","skill","lifeMax","life"].forEach(k=>e[k]=round(e[k]*base));
+ e.hp=e.hpMax;e.ki=e.kiMax;e.life=e.lifeMax;
+ return {...e,kind:type,enemyTier:tier};
+}
+function startBattle(type){
+ if(state.battle){log("Finish the current encounter before taking another dispatch.");return}
+ const f=state.active;if(f.hp<=0){log("Your fighter needs medical recovery before deployment.");return}
+ const e=enemyFor(type);
+ state.battle={type,enemy:e,turn:1,playerGuard:false,enemyGuard:false,ended:false};
+ const labels={monster:"Monster Hunt",rogue:"Rogue Challenge",spar:"Friendly Spar",clan:"Clan Conflict"};
+ $("battleTitle").textContent=labels[type];$("battleInfo").textContent=type==="spar"?"A controlled match. Knockouts earn experience, but neither fighter can die in a spar.":type==="monster"?"A Union patrol has found a monster unit. Defeat it to reclaim ground.":type==="rogue"?"A rogue fighter blocks your route. Win and you may convince them to join the Union.":"A clan dispute has turned violent. A loss can be fatal. Choose your actions carefully.";
+ log(`${f.name} meets ${e.name}. ${styles[e.style].desc}`);
+ render();showTab("battle",document.querySelector('[data-tab="battle"]'));
+}
+function renderBattle(){
+ const b=state.battle;if(!b)return;const f=state.active,e=b.enemy;
+ $("battlePower").textContent=`${fmt(power(f))} vs ${fmt(power(e))}`;
+ $("combatants").innerHTML=`<div class="fighter"><div class="row"><strong>${escapeHtml(f.name)}</strong><span class="tag green">You</span></div><p class="small">HP ${fmt(f.hp)}/${fmt(f.hpMax)} · Ki ${fmt(f.ki)}/${fmt(f.kiMax)}</p><div class="bar hp"><i style="width:${Math.max(0,f.hp/f.hpMax*100)}%"></i></div><div class="bar ki"><i style="width:${Math.max(0,f.ki/f.kiMax*100)}%"></i></div></div><div class="fighter"><div class="row"><strong>${escapeHtml(e.name)}</strong><span class="tag red">${e.kind}</span></div><p class="small">HP ${fmt(e.hp)}/${fmt(e.hpMax)} · Ki ${fmt(e.ki)}/${fmt(e.kiMax)}</p><div class="bar hp"><i style="width:${Math.max(0,e.hp/e.hpMax*100)}%"></i></div><div class="bar ki"><i style="width:${Math.max(0,e.ki/e.kiMax*100)}%"></i></div></div>`;
+ $("battleActions").innerHTML=b.ended?`<button class="primary" onclick="closeBattle()">Return to Union HQ</button>`:
+ `<button class="primary" onclick="playerAction('strike')">Strike</button><button onclick="playerAction('ki')">Ki Technique</button><button onclick="playerAction('guard')">Guard and Read</button><button onclick="playerAction('focus')">Focus</button><button class="ghost" onclick="playerAction('retreat')">Retreat</button>`;
+}
+function playerAction(action){
+ const b=state.battle;if(!b||b.ended)return;const f=state.active,e=b.enemy;
+ if(action==="retreat"){if(b.type==="spar"||b.type==="monster"||b.type==="rogue"){log(`${f.name} withdraws and lives to fight another day.`);b.ended=true;renderBattle();return}else{log("The clan's fighters close ranks. There is no safe retreat from this conflict.");enemyTurn();return}}
+ let dmg=0;
+ if(action==="strike"){
+  const style=styles[f.style];dmg=Math.max(1,round((f.atk*style.atk+f.skill*.32-e.def*.43)*(0.85+Math.random()*.35)));
+  e.hp=round(Math.max(0,e.hp-dmg));log(`${f.name} attacks. ${styles[f.style].desc} The exchange deals ${fmt(dmg)} damage.`);
+  if(f.species==="Saiyan"&&e.hp<e.hpMax*.35){dmg=round(f.atk*.12);e.hp=round(Math.max(0,e.hp-dmg));log(`Battle Surge flares as ${f.name} presses the advantage for ${fmt(dmg)} extra damage.`)}
+ }else if(action==="ki"){
+  if(f.ki<1){log(`${f.name} tries to gather ki, but their reserve is too low. They switch to a basic strike.`);dmg=Math.max(1,round(f.atk*.65-e.def*.3));e.hp=round(Math.max(0,e.hp-dmg))}
+  else{const cost=Math.min(f.ki,round(Math.max(1,f.kiMax*.22)));f.ki=round(f.ki-cost);dmg=Math.max(1,round((f.kiMax*.8+f.skill*.42+f.atk*.25-e.def*.25)*(0.85+Math.random()*.35)));e.hp=round(Math.max(0,e.hp-dmg));log(`${f.name} shapes ki into a focused technique. The blast bends around the opponent's guard for ${fmt(dmg)} damage, costing ${fmt(cost)} ki.`)}
+ }else if(action==="guard"){b.playerGuard=true;f.ki=Math.min(f.kiMax,round(f.ki+.12));log(`${f.name} settles into a defensive stance and studies the opponent's shoulders. Incoming damage should be reduced.`)}
+ else if(action==="focus"){const gain=round(Math.max(1,f.kiMax*.24));f.ki=Math.min(f.kiMax,round(f.ki+gain));f.skill=round(f.skill+.03);log(`${f.name} slows their breathing and restores ${fmt(gain)} ki. A tiny insight sharpens their mastery.`)}
+ if(e.hp<=0){winBattle();return}
+ enemyTurn();
+}
+function enemyTurn(){
+ const b=state.battle;if(!b||b.ended)return;const f=state.active,e=b.enemy;
+ const useKi=e.ki>e.kiMax*.18&&Math.random()<.34;
+ let dmg;
+ if(useKi){const cost=round(Math.max(1,e.kiMax*.18));e.ki=round(Math.max(0,e.ki-cost));dmg=round(e.kiMax*.52+e.skill*.32+e.atk*.2-f.def*.28);log(`${e.name} fires a compressed ki shot. The air snaps as it deals ${fmt(Math.max(1,dmg))} damage.`)}
+ else{dmg=round(e.atk*.78+e.skill*.22-f.def*.38);log(`${e.name} closes the distance with a physical attack for ${fmt(Math.max(1,dmg))} damage.`)}
+ dmg=Math.max(1,dmg)*(b.playerGuard?.48:1)*(0.85+Math.random()*.3);dmg=round(dmg);f.hp=round(Math.max(0,f.hp-dmg));b.playerGuard=false;b.turn++;
+ if(f.hp<=0){loseBattle();return}
+ renderBattle();render();
+}
+function gainXP(amount){
+ const f=state.active;f.xp=round(f.xp+amount);
+ while(f.xp>=f.xpNeed){levelBonus(f);log(`${f.name} reaches level ${f.level}. Their core stats rise, their reserves recover, and the next threshold grows harder.`)}
+}
+function winBattle(){
+ const b=state.battle,f=state.active,e=b.enemy;b.ended=true;
+ const xp=b.type==="spar"?Math.round(12+f.level*3):Math.round(23+e.level*6);
+ gainXP(xp);f.hp=Math.max(1,f.hp);f.ki=Math.min(f.kiMax,round(f.ki+f.kiMax*.12));
+ if(b.type==="monster"){state.monsterWins++;state.front++;state.unionRep+=12;log(`Victory. The Union retakes a block of territory. Threat tier rises, and the next patrol will be stronger.`)}
+ if(b.type==="rogue"){state.rogueWins++;state.unionRep+=5;state.roster.push({...e,id:Date.now()+Math.random(),hp:e.hpMax,ki:e.kiMax,retired:false});log(`${e.name} accepts the result and joins the Union roster. Their style and species are now available for a future leader.`)}
+ if(b.type==="spar"){state.unionRep+=2;log(`Spar complete. The medics call it a clean knockout. Both fighters live, and the Union logs the training data.`)}
+ if(b.type==="clan"){state.unionRep+=8;log(`Your clan wins the conflict. The rival group backs down, and your family name gains influence.`)}
+ if(f.species==="Saiyan"&&b.type!=="spar"){f.atk=round(f.atk+.25);log(`Battle Surge leaves a permanent trace. Attack increases by 0.25.`)}
+ log(`${f.name} wins and earns ${xp} XP. Current power level: ${fmt(power(f))}.`);
+ renderBattle();render();
+}
+function loseBattle(){
+ const b=state.battle,f=state.active;b.ended=true;
+ if(b.type==="spar"){f.hp=1;log(`${f.name} is knocked out. The Union medic revives them after the spar. Spars never cause death.`)}
+ else if(b.type==="monster"||b.type==="rogue"){f.hp=1;f.ki=0;log(`${f.name} is defeated and extracted by Union medics. They survive, but lose the encounter and need recovery.`)}
+ else{log(`${f.name} falls in the clan conflict. This was a lethal encounter. Their life ends here, and the next descendant must carry the legacy.`);f.hp=0;f.retired=true;state.lineage.push({...f,finalPower:power(f),cause:"Fell in clan conflict"});$("battleInfo").textContent="Your leader has died. Raise a descendant in the Lineage tab to continue the campaign."}
+ renderBattle();render();
+}
+function closeBattle(){state.battle=null;render()}
+function makeDescendant(){
+ if(state.battle){alert("Finish the encounter first.");return}
+ const old=state.active;
+ if(!old.retired){old.retired=true;state.lineage.push({...old,finalPower:power(old),cause:"Retired to raise the next generation"})}
+ state.gen=Math.max(state.gen,old.gen)+1;state.legacyBonus++;
+ const available=state.roster.filter(r=>!r.retired&&r.id!==old.id);
+ const inherited=state.legacyBonus;
+ const sp=old.species,style=old.style;
+ const child=makeFighter(["Ren","Mira","Taro","Sora","Aki","Korin","Niko"][Math.floor(Math.random()*7)]+" "+(state.gen),sp,style,state.gen,inherited);
+ // Inherited traits: descendants are modestly stronger, and their growth gets a compounded bonus.
+ child.hpMax=round(child.hpMax*(1+inherited*.03));child.hp=child.hpMax;
+ child.atk=round(child.atk*(1+inherited*.03));child.def=round(child.def*(1+inherited*.03));child.kiMax=round(child.kiMax*(1+inherited*.03));child.ki=child.kiMax;child.skill=round(child.skill*(1+inherited*.03));
+ child.lifeMax=round(child.lifeMax*(1+inherited*.03));child.life=child.lifeMax;
+ child.perk=species[sp].perk;
+ state.active=child;state.roster.push(child);log(`Generation ${state.gen} begins. ${child.name} inherits the ${sp} bloodline and a compounded ${(inherited*5).toFixed(0)}% growth bonus. Their starting stats reflect generations of hard-won experience.`);
+ render();showTab("lineage",document.querySelector('[data-tab="lineage"]'));
+}
+function setLeader(id){const r=state.roster.find(x=>x.id===id);if(!r||r.retired)return;state.active=r;log(`${r.name} takes command as active leader. Their level and stats are preserved.`);render()}
+function exportSave(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ki-legacy-save.json";a.click();URL.revokeObjectURL(a.href)}
+function importSave(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);if(!d.active||!d.roster)throw new Error("Invalid save");state=d;render();log("Save imported successfully.")}catch(err){alert("That file is not a valid Ki Legacy save.")}};reader.readAsText(file);e.target.value=""}
+function resetGame(){if(confirm("Reset the entire campaign on this device? Export your save first if you want to keep it.")){state=freshState();render()}}
+load();render();
+</script>
+</body>
+</html>
